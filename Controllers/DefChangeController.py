@@ -39,7 +39,7 @@ class DefChangeController(Resource):
         if id_list is not None and id_list != 'undefined':
             sql = sql + " and id in (" + id_list + ")"
         if table_name is not None and table_name != 'undefined':
-            sql = sql + " and table_name = '" + table_name + "'"
+            sql = sql + " and table_name in (" + table_name + ")"
         audit_list=self.db.query(sql).fetchall()
         for i,d in enumerate(audit_list):
             print('Processing index ',i)
@@ -51,8 +51,8 @@ class DefChangeController(Resource):
         for idx,item in enumerate(audit_list):
             if item["change_type"]=="UPDATE":
                 values=self.db.query("select field_name,old_val,new_val from def_change_log  where id="+str(item["id"])+
-                                     " and table_name='"+str(item["table_name"])+"' and status='"+item["status"]+
-                                     "' and date_of_change='"+item["date_of_change"]+"'").fetchall()
+                                     " and table_name='"+str(item["table_name"])+"' and status='"+str(item["status"])+
+                                     "' and date_of_change='"+str(item["date_of_change"])+"'").fetchall()
                 update_info_list=[]
                 for val in values:
                     update_info_list.append({"field_name":val["field_name"],"old_val":val["old_val"],"new_val":val["new_val"]})
